@@ -1,8 +1,8 @@
 <template>
     <div class="bids-section">
-        <div class="bids-section__row" v-for="item in 20" :key="item">
+        <div class="bids-section__row" v-for="(offer, index) in offers" :key="index">
             <HaloPrice />
-            <PriceTag />
+            <PriceTag :name="offer.email" />
         </div>
     </div>
 </template>
@@ -15,6 +15,9 @@ import PriceTag from '@/components/PriceTag.vue'
         components: {
             HaloPrice,
             PriceTag
+        },
+        props: {
+            offers: Array
         }
     }
 </script>
