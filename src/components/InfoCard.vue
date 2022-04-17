@@ -6,7 +6,24 @@
         <div>
             Voting ends 4/20/22 @ 3pm
         </div>
-        <v-btn class="mt-4" color="#0092D8" dark depressed large>
+        <div class="info-card__price">${{offer}}</div>
+
+        <v-slider 
+            :thumb-size="40"
+            thumb-label="always"
+            step="200"
+            min="400"
+            max="100000"
+            v-model="offer"
+            class="mt-10"
+            hide-details
+            :color="$ux.primary"
+        >
+          <template v-slot:thumb-label="{ value }">
+            {{ getPriceEstimation(value) }}
+          </template>
+        </v-slider>
+        <v-btn class="mt-6" color="#0092D8" dark depressed large>
             Cast your vote!
         </v-btn>
     </div>
@@ -14,7 +31,24 @@
 
 <script>
     export default {
-        
+        data() {
+            return {
+                offer: 22000
+            }
+        },
+        methods: {
+            getPriceEstimation(value) {
+                if (value < 30000) {
+                    return '$'
+                }
+                if (value > 30000 && value < 60000) {
+                    return '$$'
+                }
+                if (value > 60000) {
+                    return '$$$'
+                }
+            }
+        },
     }
 </script>
 
@@ -31,5 +65,9 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+
+    &__price {
+        font-size: 32px;
+    }
 }
 </style>
