@@ -32,60 +32,78 @@
           Cast your vote!
         </v-btn>
       </template>
-      <div class="link mt-2" v-else>You guessed ${{ user.offer.toLocaleString() }}</div>
+      <div class="link mt-2" v-else>
+        You guessed ${{ user.offer.toLocaleString() }}
+      </div>
     </div>
-    <ValidationObserver v-if="!userExists" v-slot="{ handleSubmit }" ref="observer" slim>
-      <form class="info-card__screen" @submit.prevent="handleSubmit(addNewOffer)">
-              <p>Just a few more details</p>
-              <ValidationProvider rules="required" v-slot="{ errors }">
-                <v-text-field
-                  label="Name"
-                  v-model="user.name"
-                  class="mb-4"
-                  hide-details
-                  outlined
-                  :error-messages="errors"
-                ></v-text-field>
-              </ValidationProvider>
-              <ValidationProvider rules="required|email" v-slot="{ errors }">
-                <v-text-field
-                  label="Email"
-                  v-model="user.email"
-                  class="mb-2"
-                  hide-details
-                  outlined
-                  :error-messages="errors"
-                ></v-text-field>
-              </ValidationProvider>
+    <ValidationObserver
+      v-if="!userExists"
+      v-slot="{ handleSubmit }"
+      ref="observer"
+      slim
+    >
+      <form
+        class="info-card__screen"
+        @submit.prevent="handleSubmit(addNewOffer)"
+      >
+        <p>Just a few more details</p>
+        <ValidationProvider
+          rules="required|max:16"
+          v-slot="{ errors }"
+          name="Name"
+        >
+          <v-text-field
+            label="Name"
+            v-model="user.name"
+            class="mb-4"
+            hide-details="auto"
+            outlined
+            :error-messages="errors"
+          ></v-text-field>
+        </ValidationProvider>
+        <ValidationProvider
+          rules="required|email"
+          v-slot="{ errors }"
+          name="Email"
+        >
+          <v-text-field
+            label="Email"
+            v-model="user.email"
+            class="mb-2"
+            hide-details="auto"
+            outlined
+            :error-messages="errors"
+          ></v-text-field>
+        </ValidationProvider>
 
-              <v-row>
-                <v-col cols="4">
-                  <v-btn
-                    @click="next"
-                    class="mt-6"
-                    width="100%"
-                    color="#eee"
-                    depressed
-                    large
-                  >
-                    back
-                  </v-btn>
-                </v-col>
-                <v-col>
-                  <v-btn
-                    class="mt-6 ml-1"
-                    width="100%"
-                    color="#0092D8"
-                    dark
-                    depressed
-                    large
-                    :loading="!!loading"
-                    type="submit"
-                  >
-                    Submit
-                  </v-btn>
-                </v-col>
-              </v-row>
+        <v-row>
+          <v-col cols="4">
+            <v-btn
+              @click="next"
+              class="mt-6"
+              width="100%"
+              color="#eee"
+              depressed
+              large
+            >
+              Back
+            </v-btn>
+          </v-col>
+          <v-col>
+            <v-btn
+              class="mt-6 ml-1"
+              width="100%"
+              color="#0092D8"
+              dark
+              depressed
+              large
+              :loading="!!loading"
+              type="submit"
+            >
+              Submit
+            </v-btn>
+          </v-col>
+        </v-row>
       </form>
     </ValidationObserver>
   </div>
@@ -94,10 +112,11 @@
 <script>
 import { collection, addDoc } from "firebase/firestore";
 import { ValidationProvider, ValidationObserver, extend } from "vee-validate";
-import { email, required } from "vee-validate/dist/rules";
+import { email, max, required } from "vee-validate/dist/rules";
 
 extend("required", required);
 extend("email", email);
+extend("max", max);
 
 export default {
   components: {
@@ -115,7 +134,6 @@ export default {
         createdAt: null,
         offer: 0,
       },
-      offersCollection: collection(this.$db, "offers"),
     };
   },
   props: {
