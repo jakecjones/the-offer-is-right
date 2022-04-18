@@ -3,36 +3,40 @@
     <div class="info-card__screen" :class="{ 'screen-hidden': !voteMode }">
       <div class="ml-4">Voting is live!</div>
       <div>Voting ends 4/20/22 @ 3pm</div>
-      <div class="info-card__price">${{ offer }}</div>
-
-      <v-slider
-        :thumb-size="40"
-        thumb-label="always"
-        step="200"
-        min="400"
-        max="100000"
-        v-model="offer"
-        class="mt-10"
-        hide-details
-        :color="$ux.primary"
-      >
-        <template v-slot:thumb-label="{ value }">
-          {{ getPriceEstimation(value) }}
-        </template>
-      </v-slider>
-      <v-btn
-        @click="next"
-        class="mt-6"
-        width="100%"
-        color="#0092D8"
-        dark
-        depressed
-        large
-      >
-        Cast your vote!
-      </v-btn>
+      <template v-if="!userExists">
+        <div class="info-card__price">${{ offer }}</div>
+        <v-slider
+          :thumb-size="40"
+          thumb-label="always"
+          step="200"
+          min="400"
+          max="100000"
+          v-model="offer"
+          class="mt-10"
+          hide-details
+          :color="$ux.primary"
+        >
+          <template v-slot:thumb-label="{ value }">
+            {{ getPriceEstimation(value) }}
+          </template>
+        </v-slider>
+        <v-btn
+          @click="next"
+          class="mt-6"
+          width="100%"
+          color="#0092D8"
+          dark
+          depressed
+          large
+        >
+          Cast your vote!
+        </v-btn>
+      </template>
+      <div class="link mt-2" v-else>
+        You guessed ${{user.offer}}
+      </div>
     </div>
-    <div class="info-card__screen">
+    <div class="info-card__screen" v-if="!userExists">
       <p>Just a few more details</p>
       <v-text-field
         label="Name"
@@ -96,6 +100,16 @@ export default {
       },
     };
   },
+  props: {
+    userExists: Boolean,
+    userData: Object
+  },
+  created() {
+    if (this.userExists) {
+      this.user = this.userData;
+      this.offer = this.userData.offer;
+    }
+  },
   methods: {
     getPriceEstimation(value) {
       if (value < 30000) {
@@ -126,7 +140,8 @@ export default {
       const offerCreated = await addDoc(collection(this.$db, "offers"), docData);
 
       if (offerCreated?.firestore) {
-        localStorage.setItem('offer-user', JSON.stringify(this.user))
+        localStorage.setItem('offer-user', JSON.stringify(this.user));
+        this.$emit('register-user', this.user)
       }
     },
   },
@@ -163,6 +178,10 @@ export default {
 
   &__price {
     font-size: 32px;
+  }
+  .link {
+    font-size: 22px;
+    color: var(--ux-primary);
   }
 }
 </style>

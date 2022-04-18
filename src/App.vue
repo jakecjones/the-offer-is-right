@@ -21,7 +21,12 @@
       </div>
       <div class="panels__panel">
         <HeroSection />
-        <InfoCard />
+        <InfoCard
+          :key="updateKey"
+          :userData="userData"
+          :userExists="userExists"
+          @register-user="registerUser"
+        />
         <BidsSection v-if="hasOffers" :offers="offers"/>
       </div>
     </div>
@@ -61,6 +66,7 @@ export default {
 
     if (userData?.email && userData?.offer) {
       this.userExists = true;
+      this.userData = userData;
     }
 
     loadStyles();
@@ -76,7 +82,17 @@ export default {
   data() {
     return {
       userExists: false,
-      offers: []
+      userData: {},
+      offers: [],
+      updateKey: Date.now()
+    }
+  },
+  methods: {
+    registerUser(user) {
+      this.userExists = true;
+      console.log(user)
+      this.userData = user;
+      this.updateKey = Date.now();
     }
   },
   components: {
