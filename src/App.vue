@@ -29,6 +29,7 @@
 </template>
 
 <script>
+import Vue from 'vue';
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, query, onSnapshot, orderBy } from "firebase/firestore";
 
@@ -50,7 +51,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
+Vue.prototype.$db = db;
 
 
 export default {
