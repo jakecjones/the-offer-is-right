@@ -4,7 +4,7 @@
       <div class="ml-4">Voting is live!</div>
       <div>Voting ends 4/20/22 @ 3pm</div>
       <CarModel id="sub-model"/>
-      <template v-if="mobile && !userExists">
+      <template v-if="$vuetify.breakpoint.mobile && !userExists">
         <div class="info-card__price">{{ offerDisplay }}</div>
         <v-slider
           :thumb-size="40"
@@ -33,12 +33,12 @@
           Cast your vote!
         </v-btn>
       </template>
-      <div class="link mt-2" v-else-if="mobile">
+      <div class="link mt-2" v-else-if="$vuetify.breakpoint.mobile">
         You guessed ${{ user.offer.toLocaleString() }}
       </div>
     </div>
     <ValidationObserver
-      v-if="mobile && !userExists"
+      v-if="$vuetify.breakpoint.mobile && !userExists"
       v-slot="{ handleSubmit }"
       ref="observer"
       slim
@@ -206,9 +206,6 @@ export default {
     },
   },
   computed: {
-    mobile() {
-      return this.$vuetify.mobile;
-    },
     offerDisplay() {
       return `$${this.offer.toLocaleString()}`;
     },
