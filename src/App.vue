@@ -90,7 +90,6 @@ export default {
   methods: {
     registerUser(user) {
       this.userExists = true;
-      console.log(user)
       this.userData = user;
       this.updateKey = Date.now();
     }
