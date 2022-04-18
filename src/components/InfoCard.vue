@@ -56,7 +56,7 @@
             label="Name"
             v-model="user.name"
             class="mb-4"
-            hide-details="auto"
+            hide-details
             outlined
             :error-messages="errors"
           ></v-text-field>
@@ -65,12 +65,13 @@
           rules="required|email"
           v-slot="{ errors }"
           name="Email"
+          mode="eager"
         >
           <v-text-field
             label="Email"
             v-model="user.email"
             class="mb-2"
-            hide-details="auto"
+            hide-details
             outlined
             :error-messages="errors"
           ></v-text-field>
