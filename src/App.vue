@@ -3,7 +3,13 @@
     <div class="panels">
       <div class="panels__panel model-panel">
         <CarModel id="model" />
-        <qrcode-vue class="qr" value="https://the-offer-is-right.web.app/" size="200" level="H" />
+        <qrcode-vue
+        class="qr"
+        value="https://the-offer-is-right.web.app/"
+        size="150"
+        level="H"
+        :foreground="$ux.background"
+        />
       </div>
       <div class="panels__panel">
         <HeroSection />
@@ -115,9 +121,12 @@ export default {
 }
 .qr {
   position: absolute;
+  box-shadow: 3px 3px 13px rgba(24, 53, 88, 0.2);
+  border-radius: 10px;
   left: 0;
   bottom: 0;
-}
+  padding: 20px;
+  margin: 2em;}
 .panels {
   display: flex;
   &__panel {
