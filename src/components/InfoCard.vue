@@ -61,7 +61,7 @@
       >
         <p>Just a few more details</p>
         <ValidationProvider
-          rules="required|max:16"
+          rules="required|max:16|no-bad-words"
           v-slot="{ errors }"
           name="Name"
         >
@@ -75,7 +75,7 @@
           ></v-text-field>
         </ValidationProvider>
         <ValidationProvider
-          rules="required|email"
+          rules="required|email|no-bad-words"
           v-slot="{ errors }"
           name="Email"
           mode="eager"
@@ -128,10 +128,18 @@ import { collection, addDoc, getDocs, where, query } from "firebase/firestore";
 import { ValidationProvider, ValidationObserver, extend } from "vee-validate";
 import { email, max, required } from "vee-validate/dist/rules";
 import CarModel from '@/components/CarModel.vue'
+import Filter from 'bad-words'
+
+const badWordFilter = new Filter()
 
 extend("required", required);
 extend("email", email);
 extend("max", max);
+extend("no-bad-words", {
+  validate: (value) => {
+    return !badWordFilter.isProfane(value);
+  }
+})
 
 export default {
   components: {
