@@ -123,7 +123,11 @@ export default {
         offer: this.user.offer,
       };
 
-      await addDoc(collection(this.$db, "offers"), docData);
+      const offerCreated = await addDoc(collection(this.$db, "offers"), docData);
+
+      if (offerCreated?.firestore) {
+        localStorage.setItem('offer-user', JSON.stringify(this.user))
+      }
     },
   },
 };

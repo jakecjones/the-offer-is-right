@@ -57,6 +57,12 @@ Vue.prototype.$db = db;
 export default {
   name: 'App',
   created() {
+    const userData = JSON.parse(localStorage.getItem('offer-user'));
+
+    if (userData?.email && userData?.offer) {
+      this.userExists = true;
+    }
+
     loadStyles();
     const q = query(collection(db, "offers"), orderBy('createdAt', 'desc'));
     onSnapshot(q, (querySnapshot) => {
@@ -69,6 +75,7 @@ export default {
   },
   data() {
     return {
+      userExists: false,
       offers: []
     }
   },
