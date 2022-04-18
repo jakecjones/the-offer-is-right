@@ -3,7 +3,7 @@
     <div class="info-card__screen" :class="{ 'screen-hidden': !voteMode }">
       <div class="ml-4">Voting is live!</div>
       <div>Voting ends 4/20/22 @ 3pm</div>
-      <CarModel id="sub-model"/>
+      <CarModel v-if="canOpenAr" id="sub-model"/>
       <template v-if="mobile && !userExists">
         <div class="info-card__price">{{ offerDisplay }}</div>
         <v-slider
@@ -36,6 +36,18 @@
       <div class="link mt-2" v-else-if="mobile">
         You guessed ${{ user.offer.toLocaleString() }}
       </div>
+        <v-btn
+          @click="openAr"
+          v-if="canOpenAr"
+          class="mt-2"
+          width="100%"
+          :color="$ux.background"
+          dark
+          depressed
+          large
+        >
+          Preview car
+        </v-btn>
     </div>
     <ValidationObserver
       v-if="mobile && !userExists"
@@ -212,6 +224,9 @@ export default {
     offerDisplay() {
       return `$${this.offer.toLocaleString()}`;
     },
+    canOpenAr() {
+      return false;
+    }
   },
 };
 </script>
