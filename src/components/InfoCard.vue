@@ -5,7 +5,7 @@
       <div>Voting ends 4/20/22 @ 3pm</div>
       <CarModel id="sub-model"/>
       <template v-if="!userExists">
-        <div class="info-card__price">${{ offer }}</div>
+        <div class="info-card__price">{{ offerDisplay }}</div>
         <v-slider
           :thumb-size="40"
           thumb-label="always"
@@ -34,64 +34,102 @@
         </v-btn>
       </template>
       <div class="link mt-2" v-else>
-        You guessed ${{user.offer}}
+        You guessed ${{ user.offer.toLocaleString() }}
       </div>
     </div>
-    <div class="info-card__screen" v-if="!userExists">
-      <p>Just a few more details</p>
-      <v-text-field
-        label="Name"
-        v-model="user.name"
-        class="mb-4"
-        hide-details
-        outlined
-      ></v-text-field>
-      <v-text-field
-        label="Email"
-        v-model="user.email"
-        class="mb-2"
-        hide-details
-        outlined
-      ></v-text-field>
+    <ValidationObserver
+      v-if="!userExists"
+      v-slot="{ handleSubmit }"
+      ref="observer"
+      slim
+    >
+      <form
+        class="info-card__screen"
+        @submit.prevent="handleSubmit(addNewOffer)"
+      >
+        <p>Just a few more details</p>
+        <ValidationProvider
+          rules="required|max:16"
+          v-slot="{ errors }"
+          name="Name"
+        >
+          <v-text-field
+            label="Name"
+            v-model="user.name"
+            class="mb-4"
+            hide-details
+            outlined
+            :error-messages="errors"
+          ></v-text-field>
+        </ValidationProvider>
+        <ValidationProvider
+          rules="required|email"
+          v-slot="{ errors }"
+          name="Email"
+          mode="eager"
+        >
+          <v-text-field
+            label="Email"
+            v-model="user.email"
+            class="mb-2"
+            hide-details
+            outlined
+            :error-messages="errors"
+          ></v-text-field>
+        </ValidationProvider>
 
-      <v-row>
-        <v-col cols="4">
-          <v-btn
-            @click="next"
-            class="mt-6"
-            width="100%"
-            color="#eee"
-            depressed
-            large
-          >
-            back
-          </v-btn>
-        </v-col>
-        <v-col>
-          <v-btn
-            @click="addNewOffer"
-            class="mt-6"
-            width="100%"
-            color="#0092D8"
-            dark
-            depressed
-            large
-          >
-            Submit
-          </v-btn>
-        </v-col>
-      </v-row>
-    </div>
+        <v-row>
+          <v-col cols="4">
+            <v-btn
+              @click="next"
+              class="mt-6"
+              width="100%"
+              color="#eee"
+              depressed
+              large
+            >
+              Back
+            </v-btn>
+          </v-col>
+          <v-col>
+            <v-btn
+              class="mt-6"
+              width="100%"
+              color="#0092D8"
+              dark
+              depressed
+              large
+              :loading="!!loading"
+              type="submit"
+            >
+              Submit
+            </v-btn>
+          </v-col>
+        </v-row>
+      </form>
+    </ValidationObserver>
   </div>
 </template>
 
 <script>
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, getDocs, where, query } from "firebase/firestore";
+import { ValidationProvider, ValidationObserver, extend } from "vee-validate";
+import { email, max, required } from "vee-validate/dist/rules";
 import CarModel from '@/components/CarModel.vue'
 
+extend("required", required);
+extend("email", email);
+extend("max", max);
+
 export default {
+  components: {
+    CarModel,
+    ValidationObserver,
+    ValidationProvider,
+  },
   data() {
     return {
+      loading: 0,
       offer: 22000,
       voteMode: true,
       user: {
@@ -104,10 +142,7 @@ export default {
   },
   props: {
     userExists: Boolean,
-    userData: Object
-  },
-  components: {
-    CarModel
+    userData: Object,
   },
   created() {
     if (this.userExists) {
@@ -131,23 +166,48 @@ export default {
       this.voteMode = !this.voteMode;
     },
     async addNewOffer() {
-      const d = new Date().toUTCString()
-      
-      this.user.offer = this.offer;
+      this.loading++;
+      try {
+        this.user.offer = this.offer;
 
-      const docData = {
-        name: this.user.name,
-        email: this.user.email,
-        createdAt: `${d}`,
-        offer: this.user.offer,
-      };
+        const docData = {
+          name: this.user.name,
+          email: this.user.email,
+          createdAt: new Date().toUTCString(),
+          offer: this.user.offer,
+        };
 
-      const offerCreated = await addDoc(collection(this.$db, "offers"), docData);
+        const existingDocsResult = await getDocs(query(collection(this.$db, "offers"), where("email", "==", this.user.email)));
+        const existingDocs = existingDocsResult.docs;
 
-      if (offerCreated?.firestore) {
-        localStorage.setItem('offer-user', JSON.stringify(this.user));
-        this.$emit('register-user', this.user)
+        if (existingDocs.length > 0) {
+          const firstDocData = existingDocs[0].data();
+          console.log(firstDocData)
+          localStorage.setItem("offer-user", JSON.stringify(firstDocData));
+          this.$emit("register-user", firstDocData);
+        } else {
+          const offerCreated = await addDoc(
+            collection(this.$db, "offers"),
+            docData
+          );
+
+          if (offerCreated?.firestore) {
+            localStorage.setItem("offer-user", JSON.stringify(this.user));
+            this.$emit("register-user", this.user);
+          }
+        }
+
+        this.user.name = "";
+        this.user.email = "";
+        this.$refs.observer.reset();
+      } finally {
+        this.loading--;
       }
+    },
+  },
+  computed: {
+    offerDisplay() {
+      return `$${this.offer.toLocaleString()}`;
     },
   },
 };
