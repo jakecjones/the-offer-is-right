@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@google/model-viewer": "^1.9.0",
+    "bad-words": "^3.0.4",
     "core-js": "^3.8.3",
     "firebase": "^9.6.11",
     "qrcode.vue": "^1.4.4",
