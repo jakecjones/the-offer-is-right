@@ -92,7 +92,7 @@
           </v-col>
           <v-col>
             <v-btn
-              class="mt-6 ml-1"
+              class="mt-6"
               width="100%"
               color="#0092D8"
               dark
@@ -111,7 +111,7 @@
 </template>
 
 <script>
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, getDocs, where, query } from "firebase/firestore";
 import { ValidationProvider, ValidationObserver, extend } from "vee-validate";
 import { email, max, required } from "vee-validate/dist/rules";
 
@@ -174,14 +174,24 @@ export default {
           offer: this.user.offer,
         };
 
-        const offerCreated = await addDoc(
-          collection(this.$db, "offers"),
-          docData
-        );
+        const existingDocsResult = await getDocs(query(collection(this.$db, "offers"), where("email", "==", this.user.email)));
+        const existingDocs = existingDocsResult.docs;
 
-        if (offerCreated?.firestore) {
-          localStorage.setItem("offer-user", JSON.stringify(this.user));
-          this.$emit("register-user", this.user);
+        if (existingDocs.length > 0) {
+          const firstDocData = existingDocs[0].data();
+          console.log(firstDocData)
+          localStorage.setItem("offer-user", JSON.stringify(firstDocData));
+          this.$emit("register-user", firstDocData);
+        } else {
+          const offerCreated = await addDoc(
+            collection(this.$db, "offers"),
+            docData
+          );
+
+          if (offerCreated?.firestore) {
+            localStorage.setItem("offer-user", JSON.stringify(this.user));
+            this.$emit("register-user", this.user);
+          }
         }
 
         this.user.name = "";
