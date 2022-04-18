@@ -2,7 +2,7 @@
     <div class="bids-section">
         <div class="bids-section__row" v-for="(offer, index) in offers" :key="index">
             <HaloPrice :offer="offer.offer" />
-            <PriceTag :name="offer.name" />
+            <PriceTag :offer="offer" />
         </div>
     </div>
 </template>

@@ -7,7 +7,7 @@
             <circle cx="20" cy="38" r="6" fill="#122946"/>
             </svg>
             <div class="price-tag__name">
-                <p>{{name}}</p>
+                <p>{{offer.name}}</p>
             </div>
         </div>
 
@@ -17,7 +17,10 @@
 <script>
     export default {
         props: {
-            name: String
+            offer: Object
+        },
+        created() {
+            this.showOffers = this.$route.query.showOffers == 'true';
         }
     }
 </script>
