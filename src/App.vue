@@ -2,22 +2,8 @@
   <v-app>
     <div class="panels">
       <div class="panels__panel model-panel">
-          <model-viewer
-            auto-rotate-delay="0"
-            camera-orbit="0 80deg 0"
-            max-field-of-view="80deg"
-            field-of-view="20deg"
-            id="model"
-            class="model"
-            src="https://firebasestorage.googleapis.com/v0/b/the-offer-is-right.appspot.com/o/bmw.glb?alt=media&token=a2b85579-2ccc-4adc-a535-5f95a067be0c"
-            alt="Carvana model"
-            environment-image="neutral"
-            ar
-            ar-modes="webxr model-viewer quick-look"
-            auto-rotate
-            :camera-controls="false"
-        >
-        </model-viewer>
+        <CarModel id="model" />
+        <qrcode-vue class="qr" value="https://the-offer-is-right.web.app/" size="200" level="H" />
       </div>
       <div class="panels__panel">
         <HeroSection />
@@ -35,14 +21,17 @@
 
 <script>
 import Vue from 'vue';
+import '@google/model-viewer'
+
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, query, onSnapshot, orderBy } from "firebase/firestore";
+import QrcodeVue from 'qrcode.vue'
 
 import loadStyles from '@/styles/styles';
-import '@google/model-viewer'
 import HeroSection from '@/components/HeroSection.vue'
 import InfoCard from '@/components/InfoCard.vue'
 import BidsSection from '@/components/BidsSection.vue'
+import CarModel from '@/components/CarModel.vue'
 
 const firebaseConfig = {
   apiKey: "AIzaSyDUqnPj7PzxDsR9r-Bs8Yy-Oq-V31z1eFs",
@@ -97,7 +86,9 @@ export default {
   components: {
     HeroSection,
     InfoCard,
-    BidsSection
+    BidsSection,
+    QrcodeVue,
+    CarModel
   },
   computed: {
     hasOffers() {
@@ -122,6 +113,11 @@ export default {
   background-color: #F4F8FA;
   font-weight: 100;
 }
+.qr {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+}
 .panels {
   display: flex;
   &__panel {
@@ -133,10 +129,6 @@ export default {
     background-color: #fff;
     position: relative;
     width: 70%;
-    #model {
-      width: 100%;
-      height: 100vh;
-    }
   }
     @media screen and (max-width: 960px) {
       .model-panel {

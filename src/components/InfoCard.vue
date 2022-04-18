@@ -3,6 +3,7 @@
     <div class="info-card__screen" :class="{ 'screen-hidden': !voteMode }">
       <div class="ml-4">Voting is live!</div>
       <div>Voting ends 4/20/22 @ 3pm</div>
+      <CarModel id="sub-model"/>
       <template v-if="!userExists">
         <div class="info-card__price">${{ offer }}</div>
         <v-slider
@@ -86,6 +87,7 @@
 
 <script>
 import { collection, addDoc } from "firebase/firestore";
+import CarModel from '@/components/CarModel.vue'
 
 export default {
   data() {
@@ -103,6 +105,9 @@ export default {
   props: {
     userExists: Boolean,
     userData: Object
+  },
+  components: {
+    CarModel
   },
   created() {
     if (this.userExists) {
@@ -149,6 +154,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+#sub-model {
+  margin: 0 auto;
+    @media screen and (min-width: 960px) {
+      display: none;
+    }
+}
 .info-card {
   box-shadow: 0px 6px 13px rgba(24, 53, 88, 0.1);
   border-radius: 6px;
