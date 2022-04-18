@@ -9,7 +9,7 @@
             field-of-view="20deg"
             id="model"
             class="model"
-            src="https://firebasestorage.googleapis.com/v0/b/the-offer-is-right.appspot.com/o/scene.glb?alt=media&token=fba82636-b7ff-4647-b249-326b30fa1d67"
+            src="https://firebasestorage.googleapis.com/v0/b/the-offer-is-right.appspot.com/o/bmw.glb?alt=media&token=a2b85579-2ccc-4adc-a535-5f95a067be0c"
             alt="Carvana model"
             environment-image="neutral"
             ar
@@ -90,7 +90,6 @@ export default {
   methods: {
     registerUser(user) {
       this.userExists = true;
-      console.log(user)
       this.userData = user;
       this.updateKey = Date.now();
     }
