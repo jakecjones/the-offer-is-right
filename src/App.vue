@@ -88,7 +88,7 @@ export default {
     offers: {
       deep: true,
 
-      handler(val) {
+      handler() {
         window.explode();
       }
     }
