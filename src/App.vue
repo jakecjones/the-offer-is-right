@@ -2,11 +2,12 @@
   <v-app>
     <div class="panels">
       <div class="panels__panel model-panel">
+        <CastedVotes />
         <CarModel id="model" />
         <qrcode-vue
         class="qr"
         value="https://the-offer-is-right.web.app/"
-        size="150"
+        size="180"
         level="H"
         :foreground="$ux.background"
         />
@@ -38,6 +39,7 @@ import HeroSection from '@/components/HeroSection.vue'
 import InfoCard from '@/components/InfoCard.vue'
 import BidsSection from '@/components/BidsSection.vue'
 import CarModel from '@/components/CarModel.vue'
+import CastedVotes from '@/components/CastedVotes.vue'
 
 const firebaseConfig = {
   apiKey: "AIzaSyDUqnPj7PzxDsR9r-Bs8Yy-Oq-V31z1eFs",
@@ -87,7 +89,7 @@ export default {
       deep: true,
 
       handler(val) {
-        console.log(val)
+        window.explode();
       }
     }
   },
@@ -103,7 +105,8 @@ export default {
     InfoCard,
     BidsSection,
     QrcodeVue,
-    CarModel
+    CarModel,
+    CastedVotes
   },
   computed: {
     hasOffers() {
