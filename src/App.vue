@@ -20,7 +20,8 @@
           :userExists="userExists"
           @register-user="registerUser"
         />
-        <BidsSection v-if="hasOffers" :offers="offers"/>
+        <BidsSection v-if="hasOffers && !isRankingSection" :offers="offers"/>
+        <RankingSection v-if="hasOffers && isRankingSection" :offers="rankedOffers"/>
       </div>
     </div>
   </v-app>
@@ -31,13 +32,14 @@ import Vue from 'vue';
 import '@google/model-viewer'
 
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, query, onSnapshot, orderBy } from "firebase/firestore";
+import { getFirestore, collection, query, onSnapshot, orderBy, getDocs, doc, getDoc } from "firebase/firestore";
 import QrcodeVue from 'qrcode.vue'
 
 import loadStyles from '@/styles/styles';
 import HeroSection from '@/components/HeroSection.vue'
 import InfoCard from '@/components/InfoCard.vue'
 import BidsSection from '@/components/BidsSection.vue'
+import RankingSection from '@/components/RankingSection.vue'
 import CarModel from '@/components/CarModel.vue'
 import CastedVotes from '@/components/CastedVotes.vue'
 
@@ -58,7 +60,7 @@ Vue.prototype.$db = db;
 
 export default {
   name: 'App',
-  created() {
+  async created() {
     const userData = JSON.parse(localStorage.getItem('offer-user'));
 
     if (userData?.email && userData?.offer) {
@@ -67,6 +69,7 @@ export default {
     }
 
     loadStyles();
+
     const q = query(collection(db, "offers"), orderBy('createdAt', 'desc'));
     onSnapshot(q, (querySnapshot) => {
       const offers = [];
@@ -75,12 +78,17 @@ export default {
       });
       this.offers = offers;
     });
+
+    this.rankedOffers = await this.getSortedOffers(74211);
+
   },
   data() {
     return {
       userExists: false,
       userData: {},
+      config: {},
       offers: [],
+      rankedOffers: [],
       updateKey: Date.now()
     }
   },
@@ -98,6 +106,41 @@ export default {
       this.userExists = true;
       this.userData = user;
       this.updateKey = Date.now();
+    },
+    async getSortedOffers(goal) {
+      const allDocsResult = await getDocs(
+        query(collection(this.$db, "offers"))
+      );
+      const allDocs = allDocsResult.docs.map(doc => doc.data());
+      return allDocs.filter(doc => doc.offer <= goal).sort((a, b) => {
+        return b.offer - a.offer;
+      })
+    },
+    async getRanks(goal) {
+      const allDocsResult = await getDocs(
+        query(collection(this.$db, "offers"))
+      );
+      const allDocs = allDocsResult.docs.map(doc => doc.data());
+      let closest = null;
+      let closestGuess = 0;
+      for (const doc of allDocs) {
+        if (doc.offer <= goal && doc.offer > closestGuess) {
+          closest = doc;
+          closestGuess = doc.offer
+        }
+      }
+      return closest
+    },
+    async getConfig() {
+      const docRef = doc(db, "config", "default");
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        this.config = docSnap.data();
+        console.log("Document data:", docSnap.data());
+      } else {
+        console.log("No such document!");
+      }
     }
   },
   components: {
@@ -106,11 +149,15 @@ export default {
     BidsSection,
     QrcodeVue,
     CarModel,
-    CastedVotes
+    CastedVotes,
+    RankingSection
   },
   computed: {
     hasOffers() {
       return this.offers?.length;
+    },
+    isRankingSection() {
+      return true
     }
   }
 }

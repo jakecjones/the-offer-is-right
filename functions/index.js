@@ -1,9 +1,24 @@
 const functions = require("firebase-functions");
+const admin = require('firebase-admin')
+const serviceAccount = require('./the-offer-is-right-firebase-adminsdk-j8nh7-ee8f7ec3ce.json')
+const express = require('express')
+const cors = require('cors')
+const app = express()
 
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
-//
-// exports.helloWorld = functions.https.onRequest((request, response) => {
-//   functions.logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+admin.initializeApp({
+    credential: serviceAccount
+})
+
+app.use(cors({ origin: true }))
+
+app.get('/showRanks', async (req, res) => {
+    await admin
+    .firestore()
+    .collection('config')
+    .doc('default')
+    .update({
+        showScores: true
+    })
+})
+
+exports.api = functions.https.onRequest(app);
