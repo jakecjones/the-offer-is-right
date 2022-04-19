@@ -16,7 +16,6 @@ const loadImageFromUrl = async(imgUrl) => new Promise((resolve) => {
 });
 
     class DollarExplosion {
-        dollars = [];
 
         static generate(amount, widthOfCanvas) {
 
