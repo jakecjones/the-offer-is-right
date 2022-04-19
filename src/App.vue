@@ -82,6 +82,15 @@ export default {
       updateKey: Date.now()
     }
   },
+  watch: {
+    offers: {
+      deep: true,
+
+      handler(val) {
+        console.log(val)
+      }
+    }
+  },
   methods: {
     registerUser(user) {
       this.userExists = true;
@@ -134,6 +143,7 @@ export default {
     max-height: 100vh;
     overflow: auto;
   }
+
   .model-panel {
     background-color: #fff;
     position: relative;

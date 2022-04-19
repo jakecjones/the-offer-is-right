@@ -13,6 +13,8 @@
     ar-modes="webxr model-viewer quick-look"
     auto-rotate
     :camera-controls="false"
+    :shadow-intensity="1"
+    :shadow-softness="1"
 >
 </model-viewer>
 </template>

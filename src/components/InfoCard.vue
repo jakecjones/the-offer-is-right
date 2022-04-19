@@ -2,8 +2,7 @@
   <div class="info-card">
     <div class="info-card__screen" :class="{ 'screen-hidden': !voteMode }">
       <div class="ml-4">Voting is live!</div>
-      <div>Voting ends 4/20/22 @ 3pm</div>
-      <CarModel v-if="canOpenAr" id="sub-model"/>
+      <div>Voting ends 4/19/22 @ 2:30pm</div>
       <template v-if="$vuetify.breakpoint.mobile && !userExists">
         <div class="info-card__price">{{ offerDisplay }}</div>
         <v-slider
@@ -33,12 +32,12 @@
           Cast your vote!
         </v-btn>
       </template>
-      <div class="link mt-2" v-else-if="$vuetify.breakpoint.mobile">
+      <div class="link mt-2 mb-2" v-else-if="$vuetify.breakpoint.mobile">
         You guessed ${{ user.offer.toLocaleString() }}
       </div>
         <v-btn
-          @click="openAr"
-          v-if="canOpenAr"
+          @click="arIsOpen = !arIsOpen"
+          v-if="canOpenAr && $vuetify.breakpoint.mobile"
           class="mt-2"
           width="100%"
           :color="$ux.background"
@@ -46,8 +45,11 @@
           depressed
           large
         >
-          Preview car
+          <span v-if="!arIsOpen">Preview car</span>
+          <span v-else>Hide car</span>
         </v-btn>
+        <CarModel v-if="canOpenAr && arIsOpen" id="sub-model"/>
+
     </div>
     <ValidationObserver
       v-if="$vuetify.breakpoint.mobile && !userExists"
@@ -152,6 +154,7 @@ export default {
       loading: 0,
       offer: 22000,
       voteMode: true,
+      arIsOpen: false,
       user: {
         name: "",
         email: "",
@@ -230,7 +233,7 @@ export default {
       return `$${this.offer.toLocaleString()}`;
     },
     canOpenAr() {
-      return false;
+      return true;
     }
   },
 };
@@ -239,6 +242,7 @@ export default {
 <style lang="scss" scoped>
 #sub-model {
   margin: 0 auto;
+  width: 100%;
     @media screen and (min-width: 960px) {
       display: none;
     }

@@ -1963,20 +1963,6 @@
   resolved "https://registry.npmjs.org/@vue/web-component-wrapper/-/web-component-wrapper-1.3.0.tgz"
   integrity sha512-Iu8Tbg3f+emIIMmI2ycSI8QcEuAUgPTgHwesDU1eKMLE4YC/c/sFbGc70QgMq31ijRftV0R7vCm9co6rldCeOA==
 
-"@vuelidate/core@^2.0.0-alpha.40":
-  version "2.0.0-alpha.40"
-  resolved "https://registry.npmjs.org/@vuelidate/core/-/core-2.0.0-alpha.40.tgz"
-  integrity sha512-f4Uo0yV2BHDi5+MXWDXRcqBv0u1Cqc/RudJLGqke3wLnIcH2r8sXEqRyuVoaN2KEPqbZiTFw/Uo50wx1J+ZDFQ==
-  dependencies:
-    vue-demi "^0.12.0"
-
-"@vuelidate/validators@^2.0.0-alpha.28":
-  version "2.0.0-alpha.28"
-  resolved "https://registry.npmjs.org/@vuelidate/validators/-/validators-2.0.0-alpha.28.tgz"
-  integrity sha512-FLI4D6SfYas5gkRxc2Q8RU1Jv3mhO2wdNgYpnOEWdKB2S6vhy8ABFMXiyr4P764xY9zBmNg6OwceRfq8vYy6vA==
-  dependencies:
-    vue-demi "^0.12.0"
-
 "@webassemblyjs/ast@1.11.1":
   version "1.11.1"
   resolved "https://registry.npmjs.org/@webassemblyjs/ast/-/ast-1.11.1.tgz"
@@ -2333,6 +2319,18 @@ babel-plugin-polyfill-regenerator@^0.3.0:
   integrity sha512-Y2B06tvgHYt1x0yz17jGkGeeMr5FeKUu+ASJ+N6nB5lQ8Dapfg42i0OVrf8PNGJ3zKL4A23snMi1IRwrqqND7A==
   dependencies:
     "@babel/helper-define-polyfill-provider" "^0.3.1"
+
+bad-words@^3.0.4:
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/bad-words/-/bad-words-3.0.4.tgz#044c83935c4c363a905d47b5e0179f7241fecaec"
+  integrity sha512-v/Q9uRPH4+yzDVLL4vR1+S9KoFgOEUl5s4axd6NIAq8SV2mradgi4E8lma/Y0cw1ltVdvyegCQQKffCPRCp8fg==
+  dependencies:
+    badwords-list "^1.0.0"
+
+badwords-list@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/badwords-list/-/badwords-list-1.0.0.tgz#5e9856dbf13482a295c3b0b304afb9d4cfc5c579"
+  integrity sha1-XphW2/E0gqKVw7CzBK+51M/FxXk=
 
 balanced-match@^1.0.0:
   version "1.0.2"
@@ -6262,11 +6260,6 @@ vue-cli-plugin-vuetify@~2.4.8:
     null-loader "^4.0.1"
     semver "^7.1.2"
     shelljs "^0.8.3"
-
-vue-demi@^0.12.0:
-  version "0.12.5"
-  resolved "https://registry.npmjs.org/vue-demi/-/vue-demi-0.12.5.tgz"
-  integrity sha512-BREuTgTYlUr0zw0EZn3hnhC3I6gPWv+Kwh4MCih6QcAeaTlaIX0DwOVN0wHej7hSvDPecz4jygy/idsgKfW58Q==
 
 vue-eslint-parser@^8.0.1:
   version "8.3.0"
