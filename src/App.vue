@@ -32,7 +32,7 @@ import Vue from 'vue';
 import '@google/model-viewer'
 
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, query, onSnapshot, orderBy, getDocs } from "firebase/firestore";
+import { getFirestore, collection, query, onSnapshot, orderBy, getDocs, doc, getDoc } from "firebase/firestore";
 import QrcodeVue from 'qrcode.vue'
 
 import loadStyles from '@/styles/styles';
@@ -79,12 +79,14 @@ export default {
       this.offers = offers;
     });
 
-    this.rankedOffers = await this.getSortedOffers(70000);
+    this.rankedOffers = await this.getSortedOffers(74211);
+
   },
   data() {
     return {
       userExists: false,
       userData: {},
+      config: {},
       offers: [],
       rankedOffers: [],
       updateKey: Date.now()
@@ -128,6 +130,17 @@ export default {
         }
       }
       return closest
+    },
+    async getConfig() {
+      const docRef = doc(db, "config", "default");
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        this.config = docSnap.data();
+        console.log("Document data:", docSnap.data());
+      } else {
+        console.log("No such document!");
+      }
     }
   },
   components: {
